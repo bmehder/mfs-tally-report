@@ -25,10 +25,17 @@
   let totalAppointments = 0
   let totalMonthlyAppointments = []
   let error
-  let isAuthorized = true
+  let isAuthorized = false
   let enteredValue = ''
 
-  // $: isAuthorized = enteredValue === PASSWORD
+  const handleLogin = () => {
+    return enteredValue === PASSWORD
+      ? (isAuthorized = true)
+      : (isAuthorized = false)
+  }
+
+  sessionStorage.getItem('isAuthorized') &&
+    (isAuthorized = sessionStorage.getItem('isAuthorized'))
 
   $: chartConfig = {
     type: chartType,
@@ -65,6 +72,7 @@
   $: sessionStorage.setItem('chartType', chartType)
   $: sessionStorage.setItem('startDate', startDate)
   $: sessionStorage.setItem('endDate', endDate)
+  $: sessionStorage.setItem('isAuthorized', isAuthorized)
 
   // Keep dates within a logical range
   $: startDate < '2021-07-18' && (startDate = '2021-07-18')
@@ -151,11 +159,14 @@
 
 {#if !isAuthorized}
   <section>
-    <input
-      name="password"
-      bind:value={enteredValue}
-      placeholder="Enter password..."
-    />
+    <div>
+      <input
+        name="password"
+        bind:value={enteredValue}
+        placeholder="Enter password..."
+      />
+      <button on:click={handleLogin}>Login</button>
+    </div>
   </section>
 {/if}
 
@@ -201,6 +212,15 @@
     padding: 1rem 1.5rem;
     border: none;
     outline: none;
+  }
+
+  section div {
+    display: flex;
+    justify-content: center;
+  }
+
+  section button {
+    padding: 1rem 1.5rem;
   }
 
   main {
