@@ -25,10 +25,10 @@
   let totalAppointments = 0
   let totalMonthlyAppointments = []
   let error
-  let isAuthorized = false
+  let isAuthorized = true
   let enteredValue = ''
 
-  $: isAuthorized = enteredValue === PASSWORD
+  // $: isAuthorized = enteredValue === PASSWORD
 
   $: chartConfig = {
     type: chartType,
@@ -175,7 +175,8 @@
       <Chart config={chartConfig} />
 
       <aside use:sumAllAppointments={fetchedData}>
-        {`${totalAppointments} total`}
+        {`${totalAppointments} total`} /
+        {`${(totalAppointments / fetchedData.labels.length).toFixed(2)} avg`}
       </aside>
     {/if}
   </main>
