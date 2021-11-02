@@ -132,7 +132,9 @@
 
       <aside use:sumAllData={fetchedData}>
         {sumOfAllData} total /
-        {(sumOfAllData / fetchedData.labels.length).toFixed(2)} avg
+        {(sumOfAllData / fetchedData.labels.length).toFixed(2)} avg /
+        {((sumOfAllData / (fetchedData.labels.length * 10)) * 100).toFixed(1)}%
+        of goal
       </aside>
     {/if}
   </main>
