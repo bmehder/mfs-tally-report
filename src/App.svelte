@@ -1,41 +1,24 @@
 <script>
-  // Data structures, util and transition functions
+  // Data structures and util functions
   import { chartTypes } from './chartTypes'
-  import { reports } from './reports'
   import { printToConsole } from './console'
 
   // Svelte components
   import Spinner from './Spinner.svelte'
-  import DatePicker from './DatePicker.svelte'
   import Select from './Select.svelte'
   import Refresher from './Refresher.svelte'
   import Chart from './Chart.svelte'
 
   // App state
-  const TODAY = new Date().toISOString().slice(0, 10)
   const PASSWORD = '02242017'
 
-  let startDate = '2021-07-18'
-  let endDate = TODAY
   let chartType = 'bar'
-  let report = 'report-1'
-  let domain = 'restoreosteo'
+  let sumOfAllData = 0
   let isLoading = false
-  let fetchedData = null
-  let totalAppointments = 0
-  let totalMonthlyAppointments = []
-  let error
   let isAuthorized = false
   let enteredValue = ''
-
-  const handleLogin = () => {
-    return enteredValue === PASSWORD
-      ? (isAuthorized = true)
-      : (isAuthorized = false)
-  }
-
-  sessionStorage.getItem('isAuthorized') &&
-    (isAuthorized = sessionStorage.getItem('isAuthorized'))
+  let error = ''
+  let fetchedData = null
 
   $: chartConfig = {
     type: chartType,
@@ -43,88 +26,50 @@
   }
 
   $: consoleData = {
-    startDate,
-    endDate,
     endPoint,
     fetchedData,
   }
-
-  $: domain = report === 'report-2' ? 'primeregen' : 'restoreosteo'
 
   // $: endPoint = `https://${domain}.com/?report=${report}&startDate=${startDate}&endDate=${endDate}`
   $: endPoint = `api/get.json`
 
   // Getters for chart settings in session storage
-  sessionStorage.getItem('report') &&
-    (report = sessionStorage.getItem('report'))
-
   sessionStorage.getItem('chartType') &&
     (chartType = sessionStorage.getItem('chartType'))
 
-  sessionStorage.getItem('startDate') &&
-    (startDate = sessionStorage.getItem('startDate'))
-
-  sessionStorage.getItem('endDate') &&
-    (endDate = sessionStorage.getItem('endDate'))
+  sessionStorage.getItem('isAuthorized') &&
+    (isAuthorized = sessionStorage.getItem('isAuthorized'))
 
   // Setters for chart settings in session storage
-  $: sessionStorage.setItem('report', report)
   $: sessionStorage.setItem('chartType', chartType)
-  $: sessionStorage.setItem('startDate', startDate)
-  $: sessionStorage.setItem('endDate', endDate)
   $: sessionStorage.setItem('isAuthorized', isAuthorized)
 
-  // Keep dates within a logical range
-  $: startDate < '2021-07-18' && (startDate = '2021-07-18')
-  $: endDate < '2021-07-18' && (endDate = '2021-07-18')
-  $: startDate > TODAY && (startDate = TODAY)
-  $: endDate > TODAY && (endDate = TODAY)
-
-  // Predicates
-  $: isInvalidDateRange = endDate < startDate
-
-  const sumAllAppointmentsByMonth = node => {
-    totalMonthlyAppointments = []
-    for (let i = 0; i < fetchedData.labels.length; i++) {
-      totalMonthlyAppointments = [
-        ...totalMonthlyAppointments,
-        fetchedData.datasets
-          .map(dataset => dataset.data[i])
-          .reduce((total, next) => (total += next)),
-      ]
-    }
-    return {
-      destroy() {
-        totalMonthlyAppointments = []
-      },
-    }
+  const handleLogin = () => {
+    return enteredValue === PASSWORD
+      ? (isAuthorized = true)
+      : (isAuthorized = false)
   }
 
-  const sumAllAppointments = (node, fetchedData) => {
-    const getTotalAppointments = () => {
-      totalAppointments = fetchedData.datasets
+  const sumAllData = (node, fetchedData) => {
+    const getSumOfAllData = () => {
+      sumOfAllData = fetchedData.datasets
         .map(dataset => dataset.data.reduce((total, next) => (total += next)))
         .reduce((total, next) => (total += next))
     }
 
-    getTotalAppointments()
+    getSumOfAllData()
 
     return {
       update(fetchedData) {
-        getTotalAppointments()
+        getSumOfAllData()
       },
       destroy() {
-        totalAppointments = 0
+        sumOfAllData = 0
       },
     }
   }
 
   const makeAPIRequest = (node, endPoint) => {
-    if (isInvalidDateRange) {
-      alert('The end date cannot be before the start date.')
-      return
-    }
-
     const getData = async endPoint => {
       error = null
       fetchedData = null
@@ -185,18 +130,16 @@
     {#if fetchedData}
       <Chart config={chartConfig} />
 
-      <aside use:sumAllAppointments={fetchedData}>
-        {`${totalAppointments} total`} /
-        {`${(totalAppointments / fetchedData.labels.length).toFixed(2)} avg`}
+      <aside use:sumAllData={fetchedData}>
+        {sumOfAllData} total /
+        {(sumOfAllData / fetchedData.labels.length).toFixed(2)} avg
       </aside>
     {/if}
   </main>
 
   <footer>
-    {#key report}
-      <Select bind:value={chartType} options={chartTypes} />
-      <Refresher on:click={() => makeAPIRequest(null, endPoint)} {isLoading} />
-    {/key}
+    <Select bind:value={chartType} options={chartTypes} />
+    <Refresher on:click={() => makeAPIRequest(null, endPoint)} {isLoading} />
   </footer>
 {/if}
 

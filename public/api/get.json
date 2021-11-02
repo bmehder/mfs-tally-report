@@ -18,7 +18,22 @@
     "datasets": [
         {
             "label": "Spring 2022",
-            "backgroundColor": ["#307ad5", "#fdc735", "#10c45c", "#d94da6"],
+            "backgroundColor": [
+                "maroon",
+                "red",
+                "olive",
+                "yellow",
+                "green",
+                "lime",
+                "teal",
+                "aqua",
+                "navy",
+                "blue",
+                "purple",
+                "fuchsia",
+                "wheat",
+                "gray"
+            ],
             "data": [
                 4,
                 2,
