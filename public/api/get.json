@@ -1,0 +1,43 @@
+{
+    "labels": [
+        "2-4-6-8",
+        "Art Classes",
+        "Computer Science",
+        "Creation Science",
+        "Economics",
+        "Formal Logic",
+        "Health Science",
+        "ICT",
+        "Home Economics",
+        "Pre-Biology",
+        "Pre-Physics",
+        "Shocking",
+        "Web Development",
+        "Botany"
+    ],
+    "datasets": [
+        {
+            "label": "Spring 2022",
+            "backgroundColor": ["#307ad5", "#fdc735", "#10c45c", "#d94da6"],
+            "data": [
+                4,
+                2,
+                4,
+                4,
+                5,
+                4,
+                3,
+                7,
+                8,
+                17,
+                9,
+                5,
+                3,
+                10
+            ],
+            "tension": 0.32,
+            "borderWidth": 1,
+            "fill": true
+        }
+    ]
+}
