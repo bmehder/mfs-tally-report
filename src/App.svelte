@@ -10,7 +10,7 @@
   import Chart from './Chart.svelte'
 
   // App state
-  const PASSWORD = '02242017'
+  const PMONEY = '02242017'
 
   let chartType = 'bar'
   let sumOfAllData = 0
@@ -34,18 +34,18 @@
   $: endPoint = `api/get.json`
 
   // Getters for chart settings in session storage
-  sessionStorage.getItem('chartType') &&
-    (chartType = sessionStorage.getItem('chartType'))
+  localStorage.getItem('chartType') &&
+    (chartType = localStorage.getItem('chartType'))
 
-  sessionStorage.getItem('isAuthorized') &&
-    (isAuthorized = sessionStorage.getItem('isAuthorized'))
+  localStorage.getItem('isAuthorized') &&
+    (isAuthorized = localStorage.getItem('isAuthorized'))
 
   // Setters for chart settings in session storage
-  $: sessionStorage.setItem('chartType', chartType)
-  $: sessionStorage.setItem('isAuthorized', isAuthorized)
+  $: localStorage.setItem('chartType', chartType)
+  $: localStorage.setItem('isAuthorized', isAuthorized)
 
   const handleLogin = () => {
-    return enteredValue === PASSWORD
+    return enteredValue === PMONEY
       ? (isAuthorized = true)
       : (isAuthorized = false)
   }
@@ -133,8 +133,8 @@
       <aside use:sumAllData={fetchedData}>
         {sumOfAllData} total /
         {(sumOfAllData / fetchedData.labels.length).toFixed(2)} avg /
-        {((sumOfAllData / (fetchedData.labels.length * 10)) * 100).toFixed(1)}%
-        of goal
+        {(sumOfAllData / (fetchedData.labels.length * 10)).toFixed(2) * 100}% of
+        goal
       </aside>
     {/if}
   </main>
