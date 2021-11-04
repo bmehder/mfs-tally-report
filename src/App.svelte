@@ -22,7 +22,7 @@
   let enteredValue = ''
   let error = ''
   let fetchedData = null
-  let report = 'report-1'
+  let report = 'tally'
 
   $: chartConfig = {
     type: chartType,
@@ -35,7 +35,8 @@
   }
 
   // $: endPoint = `https://${domain}.com/?report=${report}&startDate=${startDate}&endDate=${endDate}`
-  $: endPoint = `api/get.json`
+  $: endPoint = `https://myfunscience.com/?report=${report}`
+  // $: endPoint = `api/get.json`
 
   // Getters for chart settings in session storage
   localStorage.getItem('chartType') &&
@@ -173,12 +174,6 @@
     padding: 0 2rem;
     background: white;
     text-align: center;
-  }
-
-  div {
-    width: 70%;
-    color: red;
-    font-size: 4vw;
   }
 
   footer {
