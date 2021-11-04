@@ -34,8 +34,7 @@
     fetchedData,
   }
 
-  // $: endPoint = `https://${domain}.com/?report=${report}&startDate=${startDate}&endDate=${endDate}`
-  $: endPoint = `https://myfunscience.com/wp-admin/?report=${report}`
+  $: endPoint = `https://myfunscience.com/?report=${report}`
   // $: endPoint = `api/get.json`
 
   // Getters for chart settings in session storage
@@ -54,25 +53,6 @@
       ? (isAuthorized = true)
       : (isAuthorized = false)
   }
-
-  // const sumAllData = (node, fetchedData) => {
-  //   const getSumOfAllData = () => {
-  //     sumOfAllData = fetchedData.datasets
-  //       .map(dataset => dataset.data.reduce((total, next) => (total += next)))
-  //       .reduce((total, next) => (total += next))
-  //   }
-
-  //   getSumOfAllData()
-
-  //   return {
-  //     update(fetchedData) {
-  //       getSumOfAllData()
-  //     },
-  //     destroy() {
-  //       sumOfAllData = 0
-  //     },
-  //   }
-  // }
 
   const makeAPIRequest = (node, endPoint) => {
     const getData = async endPoint => {
@@ -132,13 +112,11 @@
 
     {#if fetchedData}
       <Chart config={chartConfig} />
-
       <Display {fetchedData} {isDataGroupedByLabel} />
     {/if}
   </main>
 
   <footer>
-    <!-- <Select bind:value={report} options={reports} /> -->
     <Select bind:value={chartType} options={chartTypes} />
     <Refresher on:click={() => makeAPIRequest(null, endPoint)} {isLoading} />
   </footer>

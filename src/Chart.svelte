@@ -20,7 +20,7 @@
   }
 </script>
 
-<canvas use:handleChart={config} on:dblclick />
+<canvas use:handleChart={config} />
 
 <style>
   canvas {
