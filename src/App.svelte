@@ -1,6 +1,7 @@
 <script>
   // Data structures and util functions
   import { chartTypes } from './chartTypes'
+  import { reports } from './reportOptions'
   import { printToConsole } from './console'
 
   // Svelte components
@@ -8,17 +9,20 @@
   import Select from './Select.svelte'
   import Refresher from './Refresher.svelte'
   import Chart from './Chart.svelte'
+  import Display from './Display.svelte'
+  import Error from './Error.svelte'
 
   // App state
   const PMONEY = '02242017'
 
   let chartType = 'bar'
-  let sumOfAllData = 0
   let isLoading = false
   let isAuthorized = false
+  let isDataGroupedByLabel = true
   let enteredValue = ''
   let error = ''
   let fetchedData = null
+  let report = 'report-1'
 
   $: chartConfig = {
     type: chartType,
@@ -50,24 +54,24 @@
       : (isAuthorized = false)
   }
 
-  const sumAllData = (node, fetchedData) => {
-    const getSumOfAllData = () => {
-      sumOfAllData = fetchedData.datasets
-        .map(dataset => dataset.data.reduce((total, next) => (total += next)))
-        .reduce((total, next) => (total += next))
-    }
+  // const sumAllData = (node, fetchedData) => {
+  //   const getSumOfAllData = () => {
+  //     sumOfAllData = fetchedData.datasets
+  //       .map(dataset => dataset.data.reduce((total, next) => (total += next)))
+  //       .reduce((total, next) => (total += next))
+  //   }
 
-    getSumOfAllData()
+  //   getSumOfAllData()
 
-    return {
-      update(fetchedData) {
-        getSumOfAllData()
-      },
-      destroy() {
-        sumOfAllData = 0
-      },
-    }
-  }
+  //   return {
+  //     update(fetchedData) {
+  //       getSumOfAllData()
+  //     },
+  //     destroy() {
+  //       sumOfAllData = 0
+  //     },
+  //   }
+  // }
 
   const makeAPIRequest = (node, endPoint) => {
     const getData = async endPoint => {
@@ -122,24 +126,18 @@
     {/if}
 
     {#if error}
-      <div>
-        <span>💩</span><br />Don't panic, but...<br /><code>{error}</code>
-      </div>
+      <Error {error} />
     {/if}
 
     {#if fetchedData}
       <Chart config={chartConfig} />
 
-      <aside use:sumAllData={fetchedData}>
-        {sumOfAllData} total /
-        {(sumOfAllData / fetchedData.labels.length).toFixed(2)} avg /
-        {(sumOfAllData / (fetchedData.labels.length * 10)).toFixed(2) * 100}% of
-        goal
-      </aside>
+      <Display {fetchedData} {isDataGroupedByLabel} />
     {/if}
   </main>
 
   <footer>
+    <!-- <Select bind:value={report} options={reports} /> -->
     <Select bind:value={chartType} options={chartTypes} />
     <Refresher on:click={() => makeAPIRequest(null, endPoint)} {isLoading} />
   </footer>
@@ -177,21 +175,10 @@
     text-align: center;
   }
 
-  aside {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    font-size: 2vw;
-  }
-
   div {
     width: 70%;
     color: red;
     font-size: 4vw;
-  }
-
-  code {
-    color: initial;
   }
 
   footer {
