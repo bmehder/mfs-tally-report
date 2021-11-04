@@ -35,7 +35,7 @@
   }
 
   // $: endPoint = `https://${domain}.com/?report=${report}&startDate=${startDate}&endDate=${endDate}`
-  $: endPoint = `https://myfunscience.com/?report=${report}`
+  $: endPoint = `https://myfunscience.com/wp-admin/?report=${report}`
   // $: endPoint = `api/get.json`
 
   // Getters for chart settings in session storage
