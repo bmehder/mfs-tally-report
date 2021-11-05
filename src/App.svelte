@@ -13,11 +13,11 @@
   import Error from './Error.svelte'
 
   // App state
-  const PMONEY = '02242017'
+  // const PMONEY = '02242017'
 
   let chartType = 'bar'
   let isLoading = false
-  let isAuthorized = false
+  // let isAuthorized = false
   let isDataGroupedByLabel = true
   let enteredValue = ''
   let error = ''
@@ -34,25 +34,14 @@
     fetchedData,
   }
 
-  $: endPoint = `https://myfunscience.com/wp-admin/?report=${report}/`
-  // $: endPoint = `api/get.json`
+  $: endPoint = `https://myfunscience.com/wp-admin/?report=${report}`
 
   // Getters for chart settings in session storage
   localStorage.getItem('chartType') &&
     (chartType = localStorage.getItem('chartType'))
 
-  localStorage.getItem('isAuthorized') &&
-    (isAuthorized = localStorage.getItem('isAuthorized'))
-
   // Setters for chart settings in session storage
   $: localStorage.setItem('chartType', chartType)
-  $: localStorage.setItem('isAuthorized', isAuthorized)
-
-  const handleLogin = () => {
-    return enteredValue === PMONEY
-      ? (isAuthorized = true)
-      : (isAuthorized = false)
-  }
 
   const makeAPIRequest = (node, endPoint) => {
     const getData = async endPoint => {
@@ -87,64 +76,27 @@
   on:keypress={e => e.key === 'Enter' && makeAPIRequest(null, endPoint)}
 />
 
-{#if !isAuthorized}
-  <section>
-    <div>
-      <input
-        name="password"
-        bind:value={enteredValue}
-        placeholder="Enter password..."
-      />
-      <button on:click={handleLogin}>Login</button>
-    </div>
-  </section>
-{/if}
+<main use:makeAPIRequest={endPoint}>
+  {#if !fetchedData && !error}
+    <Spinner />
+  {/if}
 
-{#if isAuthorized}
-  <main use:makeAPIRequest={endPoint}>
-    {#if !fetchedData && !error}
-      <Spinner />
-    {/if}
+  {#if error}
+    <Error {error} />
+  {/if}
 
-    {#if error}
-      <Error {error} />
-    {/if}
+  {#if fetchedData}
+    <Chart config={chartConfig} />
+    <Display {fetchedData} {isDataGroupedByLabel} />
+  {/if}
+</main>
 
-    {#if fetchedData}
-      <Chart config={chartConfig} />
-      <Display {fetchedData} {isDataGroupedByLabel} />
-    {/if}
-  </main>
-
-  <footer>
-    <Select bind:value={chartType} options={chartTypes} />
-    <Refresher on:click={() => makeAPIRequest(null, endPoint)} {isLoading} />
-  </footer>
-{/if}
+<footer>
+  <Select bind:value={chartType} options={chartTypes} />
+  <Refresher on:click={() => makeAPIRequest(null, endPoint)} {isLoading} />
+</footer>
 
 <style>
-  section {
-    height: 100vh;
-    display: grid;
-    place-items: center;
-    background-color: #307ad5;
-  }
-
-  input {
-    padding: 1rem 1.5rem;
-    border: none;
-    outline: none;
-  }
-
-  section div {
-    display: flex;
-    justify-content: center;
-  }
-
-  section button {
-    padding: 1rem 1.5rem;
-  }
-
   main {
     height: 85vh;
     display: grid;
@@ -163,16 +115,5 @@
     padding: 1.5rem;
     background-color: #323232;
     color: white;
-  }
-
-  :global(*) {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  :global(body) {
-    color: #333;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-      Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
   }
 </style>
