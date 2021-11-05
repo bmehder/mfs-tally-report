@@ -34,8 +34,8 @@
     fetchedData,
   }
 
-  $: endPoint = `https://myfunscience.com/wp-admin/?report=${report}/`
-  // $: endPoint = `api/get.json`
+  // $: endPoint = `https://myfunscience.com/wp-admin/?report=${report}/`
+  $: endPoint = `api/get.json`
 
   // Getters for chart settings in session storage
   localStorage.getItem('chartType') &&
