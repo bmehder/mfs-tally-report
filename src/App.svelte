@@ -12,17 +12,12 @@
   import Display from './Display.svelte'
   import Error from './Error.svelte'
 
-  // App state
-  // const PMONEY = '02242017'
-
   let chartType = 'bar'
   let isLoading = false
-  // let isAuthorized = false
   let isDataGroupedByLabel = true
-  let enteredValue = ''
   let error = ''
   let fetchedData = null
-  let report = 'tally'
+  let date = 'spring-2022'
 
   $: chartConfig = {
     type: chartType,
@@ -34,7 +29,7 @@
     fetchedData,
   }
 
-  $: endPoint = `https://myfunscience.com/wp-admin/?report=${report}`
+  $: endPoint = `https://myfunscience.com/wp-admin/?report=tally&date=${date}`
 
   // Getters for chart settings in session storage
   localStorage.getItem('chartType') &&
@@ -92,6 +87,7 @@
 </main>
 
 <footer>
+  <Select bind:value={date} options={reports} />
   <Select bind:value={chartType} options={chartTypes} />
   <Refresher on:click={() => makeAPIRequest(null, endPoint)} {isLoading} />
 </footer>

@@ -1,6 +1,6 @@
 export const reports = [
-  { value: 'report-1', name: 'Restore Osteo' },
-  { value: 'report-2', name: 'Prime Regen' },
-  { value: 'report-3', name: 'Monthly' },
+  { value: 'full-year-2021-2022', name: 'Full Year' },
+  { value: 'fall-2021', name: 'Fall' },
+  { value: 'spring-2022', name: 'Spring' },
   // { value: 'report-4', name: 'Report 4' },
 ]
