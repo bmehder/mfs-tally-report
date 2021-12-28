@@ -17,7 +17,7 @@
   let isDataGroupedByLabel = true
   let error = ''
   let fetchedData = null
-  let date = 'spring-2022'
+  let date = 'spring'
 
   $: chartConfig = {
     type: chartType,

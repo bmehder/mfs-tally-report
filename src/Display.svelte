@@ -1,6 +1,6 @@
 <script>
   export let fetchedData
-  export let isDataGroupedByLabel
+  // export let isDataGroupedByLabel
 
   let totalOfDataByDatasets = []
   let totalOfAllData
@@ -65,7 +65,7 @@
     font-size: 2vw;
   }
 
-  li {
+  /* li {
     list-style-type: none;
-  }
+  } */
 </style>
